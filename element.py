@@ -1,3 +1,5 @@
+import orbitals.py
+
 elements = ('Hydrogen:H', 'Helium:He', 
     'Lithium:Li', 'Beryllium:Be', 'Boron:B', 'Carbon:C', 'Nitrogen:N', 'Oxygen:O', 'Fluorine:F', 'Neon:Ne', 
     'Sodium:Na', 'Magnesium:Mg', 'Aluminum:Al', 'Silicon:Si', 'Phosphorus:P', 'Sulfur:S', 'Chlorine:Cl', 'Argon:Ar', 
@@ -8,21 +10,23 @@ elements = ('Hydrogen:H', 'Helium:He',
 class Element:
 
     def __init__(self, protons, neutrons, electrons):
-        self.p = protons
-        self.n = neutrons
-        self.e = [  orbitalS(1), 
-                    orbitalS(2),                           orbitalP(2), 
-                    orbitalS(3),                           orbitalP(3),
-                    orbitalS(4),              orbitalD(3), orbitalP(4),
-                    orbitalS(5),              orbitalD(4), orbitalP(5),
+        self.p = int(protons)
+        self.n = int(neutrons)
+        self.e = [  orbitalS(1), orbital(0),  orbital(0),  orbital(0),
+                    orbitalS(2), orbital(0),  orbital(0),  orbitalP(2), 
+                    orbitalS(3), orbital(0),  orbital(0),  orbitalP(3),
+                    orbitalS(4), orbital(0),  orbitalD(3), orbitalP(4),
+                    orbitalS(5), orbital(0),  orbitalD(4), orbitalP(5),
                     orbitalS(6), orbitalF(4), orbitalD(5), orbitalP(6),
                     orbitalS(7), orbitalF(5), orbitalD(6), orbitalP(7)]
 
         for o in self.e:
-            electrons = o.add(electrons)
+            electrons = o.add(int(electrons))
 
     
     def isStable(self):
+        if self.p > 83:
+            return False
         if self.p < 20:
             return abs(self.p - self.n) < 2
         elif self.p < 83:
@@ -31,17 +35,25 @@ class Element:
 
 
     def getName(self):
-        return elements[self.p].split(':')[0]
+        return elements[self.p - 1].split(':')[0]
 
     def getSymbol(self):
-        return elements[self.p].split(':')[1]
+        return elements[self.p - 1].split(':')[1]
 
-    def getCharge(self, orbital):
+    def getCharge(self):
+        e = 0
+        for o in self.e:
+            e += o.getElectrons()
+        return self.p - e
+
+    def getOrbital(self, orbital):
         return self.e[orbital].e
     
     def getOrbitals(self, orbital):
-        orbitalSet = []
-        orbitals = []
-        for i in electrons:
-            if(len(orbitalSet) < 4):
-                a = 1
+        total = ""
+        for o in self.e:
+            total += str(o)
+        return total
+
+
+    
