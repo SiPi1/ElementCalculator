@@ -24,14 +24,30 @@ class Element:
             electrons = o.add(int(electrons))
 
     
-    def isStable(self):
-        if self.p > 83:
-            return False
-        if self.p < 20:
-            return abs(self.p - self.n) < 2
-        elif self.p < 83:
-            return abs((1.5 * self.p) - self.n) < 2
-        return False
+    def getStable(self):
+#3/368, 77/92
+
+        
+        if abs((((3 * self.p * self.p) / 368) + ((77 * self.p) / 92)) - self.n) < 2: #magic numbers
+            return 0 #stable
+        elif ((3 * self.p * self.p) / 368) + ((77 * self.p) / 92) < self.n:
+            return 1 if self.n - self.p < self.p else 2 #beta- or neutron decay
+        else:
+                return -1 if self.p - self.n < self.n else -2 #beta+ or proton decay
+        if self.p < 102:
+            if abs((1.5 * self.p) - self.n) > (self.p / 8) + 5:
+                return 2 if 1.5 * self.p < self.n else -2 #proton or neutron decay
+            if self.p > 83 and self.n < 134:
+                return 3 #alpha decay
+            if abs((1.5 * self.p) - self.n) < 2:
+                return 0 if self.p < 83 else 3 #stable or alpha decay (if its too big)
+            else:
+                if (1.5 * self.p) < self.n:
+                    return 1
+                else:
+                    return -1
+        
+        return 3 #alpha decay
 
 
     def getName(self):
@@ -49,11 +65,34 @@ class Element:
     def getOrbital(self, orbital):
         return self.e[orbital].e
     
-    def getOrbitals(self, orbital):
+    def getOrbitals(self):
         total = ""
         for o in self.e:
             total += str(o)
         return total
 
+    def decay(self): #Energy emitted?
+        if self.getStable() == 3:
+            self.p -= 2
+            self.n -= 2
+            print("Ejected a He nucleus: APHA DECAY")
+            
+        elif self.getStable() == 2:
+            self.p -= 1
+            print("Ejected a proton: PROTON DECAY")
+            
+        elif self.getStable() == 1:
+            self.n -= 1
+            self.p += 1
+            print("Ejected an electron: BETA- DECAY")
 
-    
+        elif self.getStable() == -1:
+            self.n += 1
+            self.p -= 1
+            print("Ejected a positron: BETA+ DECAY")
+            
+        elif self.getStable() == -2:
+            self.n -= 1
+            print("Ejected a neutron: NEUTRON DECAY")
+
+        return self.getStable()
