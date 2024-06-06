@@ -1,23 +1,32 @@
-import element.py
+''' --RUN THIS FILE--
+Main method - I chose to contain it in a main function bc I'm a c++ guy
+Constructs an atom, and runs down its decay chain
+
+
+@author Silas W
+@version 6-5-2024
+'''
+import element
 
 def main():
     print("Hello? Would you like to make an element!")
-    element = Element(input("How many protons? "), input("How many neutrons? "), input("How many electrons? "))
+    lmnt = element.Element(input("How many protons? "), input("How many neutrons? "), input("How many electrons? "))
     
-    print("Name: " + element.getName())
-    print("Symbol: " + element.getSymbol())
-    print("Charge: " + str(element.getCharge()))
-    print("Stable? " + ("Probably" if element.getStable() == 0 else "Unlikely"))
-    print("Orbitals: " + element.getOrbitals())
+    print("Name: " + lmnt.getName())
+    print("Symbol: " + lmnt.getSymbol())
+    print("Charge: " + str(lmnt.getCharge()))
+    print("Stable? " + ("Probably" if lmnt.getStable() == 0 else "Unlikely"))
+    print("Orbitals: " + lmnt.getOrbitals())
     
-    while (not(element.getStable() == 0) and input("Simulate decay? [Y/n] ") == "Y"):
+    while (not(lmnt.getStable() == 0) and input("Simulate decay? [enter] ") == ""):
         print()
-        print("Protons: " + element.p)
-        print("Neutrons: " + element.n)
-        print("Name: " + element.getName())
-        print("Symbol: " + element.getSymbol())
-        print("Charge: " + str(element.getCharge()))
-        print("Stable? " + ("Probably" if element.getStable() == 0 else "Unlikely"))
-``
+        lmnt.decay()
+        print("Protons: " + str(lmnt.p))
+        print("Neutrons: " + str(lmnt.n))
+        print("Name: " + lmnt.getName())
+        print("Symbol: " + lmnt.getSymbol())
+        print("Charge: " + str(lmnt.getCharge()))
+        print("Stable? " + ("Probably" if lmnt.getStable() == 0 else "Unlikely"))
+
 
 main()
