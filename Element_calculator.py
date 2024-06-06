@@ -1,10 +1,106 @@
 '''
-Element class - can find its name, symbol, charge, mass, orbitals, stability, and can decay
+Element calculator - This single-file version exists to make it easier to, for instance, paste into an online compiler.
+Contains classes for an atom and an orbital, and a main method
 
 @author Silas W and Molly M
 @version 6-5-2024
 '''
-import orb
+
+# Orbital class - each type of orbital inherits from the base orbital class. Base class is only used to represent empty orbitals
+class orbital:
+
+    # Initializes empty orbital with its energy level
+    # (overridden in child classes)
+    def __init__(self, energyLevel):
+        self.e = 0
+        self.energyLevel = energyLevel
+        self.capacity = 0
+
+    # Getters
+    def isFull(self):
+        return self.e == self.capacity
+
+    def getElectrons(self):
+        return self.e
+
+    # Finds stability of orbital - Where do electrons want to be
+    #ADD: Implement (see electrostablilze())
+    #ADD: Make it better (I wrote this in 1 min)
+    def stability(self):
+        if self.e * 2 == self.capacity:
+            return 2
+        elif self.isFull():
+            return 3
+        else: 
+            return 0
+
+    # Uses energy level, type, and electrons to find its part of the orbital form of an atom
+    # (Overridden in child classes)
+    def __str__(self):
+        return ""
+    
+    #Adds electrons and returns leftover
+    def add(self, electrons):
+        self.e += int(electrons)
+
+        if self.e > self.capacity:
+            leftover = self.e - self.capacity
+            self.e = self.capacity
+            return leftover
+
+        return 0
+
+    
+
+    
+class orbitalS(orbital):
+    def __init__(self, energyLevel):
+        super().__init__(energyLevel)
+        self.capacity = 2
+    
+    def __str__(self):
+        if self.e > 0:
+            return str(self.energyLevel) + "S^" + str(self.e) + " "
+        return ""
+    
+
+class orbitalP(orbital):
+    def __init__(self, energyLevel):
+        super().__init__(energyLevel)
+        self.capacity = 6
+    
+    def __str__(self):
+        if self.e > 0:
+            return str(self.energyLevel) + "P^" + str(self.e) + " "
+        return ""
+    
+
+class orbitalD(orbital):
+    def __init__(self, energyLevel):
+        super().__init__(energyLevel)
+        self.capacity = 10
+    
+    def __str__(self):
+        if self.e > 0:
+            return str(self.energyLevel) + "D^" + str(self.e) + " "
+        return ""
+    
+
+class orbitalF(orbital):
+    def __init__(self, energyLevel):
+        super().__init__(energyLevel)
+        self.capacity = 12
+    
+    def __str__(self):
+        if self.e > 0:
+            return str(self.energyLevel) + "F^" + str(self.e) + " "
+        return ""
+
+
+
+
+
+# Element class - can find its name, symbol, charge, mass, orbitals, stability, and can decay
 
 elements = ('Nothing:N/A', 'Hydrogen:H', 'Helium:He', 
     'Lithium:Li', 'Beryllium:Be', 'Boron:B', 'Carbon:C', 'Nitrogen:N', 'Oxygen:O', 'Fluorine:F', 'Neon:Ne', 
@@ -20,13 +116,13 @@ class Element:
     def __init__(self, protons, neutrons, electrons):
         self.p = int(protons)
         self.n = int(neutrons)
-        self.e = [  orb.orbitalS(1), orb.orbital(0),  orb.orbital(0),  orb.orbital(0),
-                    orb.orbitalS(2), orb.orbital(0),  orb.orbital(0),  orb.orbitalP(2), 
-                    orb.orbitalS(3), orb.orbital(0),  orb.orbital(0),  orb.orbitalP(3),
-                    orb.orbitalS(4), orb.orbital(0),  orb.orbitalD(3), orb.orbitalP(4),
-                    orb.orbitalS(5), orb.orbital(0),  orb.orbitalD(4), orb.orbitalP(5),
-                    orb.orbitalS(6), orb.orbitalF(4), orb.orbitalD(5), orb.orbitalP(6),
-                    orb.orbitalS(7), orb.orbitalF(5), orb.orbitalD(6), orb.orbitalP(7)]
+        self.e = [  orbitalS(1), orbital(0),  orbital(0),  orbital(0),
+                    orbitalS(2), orbital(0),  orbital(0),  orbitalP(2), 
+                    orbitalS(3), orbital(0),  orbital(0),  orbitalP(3),
+                    orbitalS(4), orbital(0),  orbitalD(3), orbitalP(4),
+                    orbitalS(5), orbital(0),  orbitalD(4), orbitalP(5),
+                    orbitalS(6), orbitalF(4), orbitalD(5), orbitalP(6),
+                    orbitalS(7), orbitalF(5), orbitalD(6), orbitalP(7)]
 
         for o in self.e:
             electrons = o.add(int(electrons))
@@ -113,3 +209,32 @@ class Element:
         self.electrostable()
 
         return self.getStable()
+
+
+
+
+
+# Main method - I chose to contain it in a main function bc I'm a c++ guy
+# Constructs an atom, and runs down its decay chain
+def main():
+    print("Hello? Would you like to make an element!")
+    lmnt = Element(input("How many protons? "), input("How many neutrons? "), input("How many electrons? "))
+    
+    print("Name: " + lmnt.getName())
+    print("Symbol: " + lmnt.getSymbol())
+    print("Charge: " + str(lmnt.getCharge()))
+    print("Stable? " + ("Probably" if lmnt.getStable() == 0 else "Unlikely"))
+    print("Orbitals: " + lmnt.getOrbitals())
+    
+    while (not(lmnt.getStable() == 0) and input("Simulate decay? [enter] ") == ""):
+        print()
+        lmnt.decay()
+        print("Protons: " + str(lmnt.p))
+        print("Neutrons: " + str(lmnt.n))
+        print("Name: " + lmnt.getName())
+        print("Symbol: " + lmnt.getSymbol())
+        print("Charge: " + str(lmnt.getCharge()))
+        print("Stable? " + ("Probably" if lmnt.getStable() == 0 else "Unlikely"))
+
+
+main()
